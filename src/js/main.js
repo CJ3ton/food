@@ -41,10 +41,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
     function getTimeRemaining(endtime) {
         const t = Date.parse(endtime) - Date.parse(new Date()),
-        days = Math.floor(t / (1000 * 60 * 60 * 24)),
-        hours = Math.floor(t / (1000 * 60 * 60) % 24),
-        minutes = Math.floor((t / 1000 / 60) % 60),
-        seconds = Math.floor((t / 1000) % 60);
+            days = Math.floor(t / (1000 * 60 * 60 * 24)),
+            hours = Math.floor(t / (1000 * 60 * 60) % 24),
+            minutes = Math.floor((t / 1000 / 60) % 60),
+            seconds = Math.floor((t / 1000) % 60);
 
         return {
             'total': t,
@@ -55,7 +55,7 @@ window.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    function getZero (num) {
+    function getZero(num) {
         if (num >= 0 && num < 10) {
             return `0${num}`;
         } else {
@@ -71,21 +71,56 @@ window.addEventListener('DOMContentLoaded', () => {
             seconds = timer.querySelector('#seconds'),
             timeInterval = setInterval(updateClock, 1000);
 
-            updateClock();
+        updateClock();
 
-            function updateClock() {
-                const t = getTimeRemaining(endtime);
-                days.innerHTML = getZero(t.days);
-                hours.innerHTML = getZero(t.hours);
-                minutes.innerHTML = getZero(t.minutes);
-                seconds.innerHTML = getZero(t.seconds);
+        function updateClock() {
+            const t = getTimeRemaining(endtime);
+            days.innerHTML = getZero(t.days);
+            hours.innerHTML = getZero(t.hours);
+            minutes.innerHTML = getZero(t.minutes);
+            seconds.innerHTML = getZero(t.seconds);
 
-                if (t.total <= 0) {
-                    clearInterval(timeInterval);
-                }
+            if (t.total <= 0) {
+                clearInterval(timeInterval);
             }
-            
+        }
+
     }
 
     setClock('.timer', deadline);
+
+    // Modal
+
+    const modalTrigger = document.querySelectorAll('[data-modal]'),
+        modal = document.querySelector('.modal'),
+        modalCloseBtn = document.querySelector('[data-close]');
+
+    modalTrigger.forEach(btn => {
+        btn.addEventListener('click', () => {
+            modal.classList.add('show');
+            modal.classList.remove('hide');
+            document.body.style.overflow = 'hidden';
+        });
+    });
+
+    function hideModal() {
+        modal.classList.add('hide');
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+
+    modalCloseBtn.addEventListener('click', hideModal);
+
+    modal.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            hideModal();
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.code == 'Escape' && modal.classList.contains('show')) {
+            hideModal();
+        }
+    });
+
 });
